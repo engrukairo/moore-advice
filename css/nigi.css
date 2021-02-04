@@ -1,0 +1,24 @@
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container, .search-header{padding:30px;}
+}
+
+.container {
+  max-width: 100%;
+}
+
+.search-header {
+  max-width: 700px;
+}
+
+.card-deck .card {
+  min-width: 220px;
+}
