@@ -6,3 +6,4 @@ To setup file for local development,
 2. Create a database and name it esperaso_mooredb.
 3. Create a database user with name esperaso_mooredb and password shared in the email.
 4. Import all the files in this repository to the folder created earlier.
+5. Rename a.htaccess.php to .htaccess
