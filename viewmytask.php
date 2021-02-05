@@ -7,10 +7,9 @@ $cookieuser = addslashes($_COOKIE['moore_cookie']);
 $taskid = addslashes($_GET['task']);
 include("databasecon.php");
 
-
 if(isset($_POST['deleteTask'])){
 $taskid = addslashes($_POST['id']);
-		$delsql = "DELETE FROM mooretasks WHERE mid = '$taskid'";
+		$delsql = "DELETE FROM mooretasks WHERE mid = '$taskid' AND taskpostedby = '$cookieuser'";
 			$dels = $mooredb ->query($delsql);
 			$error = $mooredb->errorInfo();
 			if (isset($error[2])) die($error[2]);
@@ -32,12 +31,12 @@ if(isset($_SESSION['update'])){$update = $_SESSION['update']; unset($_SESSION['u
 <div class="my-3 p-3 bg-white rounded shadow">
 <?php
 
-	$sql = "SELECT COUNT(*) FROM mooretasks WHERE mid = '$taskid'";
+	$sql = "SELECT COUNT(*) FROM mooretasks WHERE mid = '$taskid' AND taskpostedby = '$cookieuser'";
 	$result = $mooredb->query($sql);
 	$wwws = $result->fetchColumn();
 	if ($wwws > 0) {
 
-					$sqw = "SELECT * FROM mooretasks WHERE mid = '$taskid' ORDER BY mid DESC";
+					$sqw = "SELECT * FROM mooretasks WHERE mid = '$taskid' AND taskpostedby = '$cookieuser' ORDER BY mid DESC";
 							foreach ($mooredb ->query($sqw) as $row){
 							$taskid = $row['mid'];
 							$taskname = $row['taskname'];
@@ -56,12 +55,12 @@ if(isset($_SESSION['update'])){$update = $_SESSION['update']; unset($_SESSION['u
           <li class="mb-5"><strong>Assigned to <?php echo $taskowner;?></strong></li>
           <li>Task Description:<br /><?php echo $taskdesc;?></li>
         </ul>
-        <a class="btn btn-moore" href="https://moore.esperasoft.com/edit/<?php echo $taskid;?>">Edit Task</a>
+        <a class="btn btn-moore" href="https://moore.esperasoft.com/myedit/<?php echo $taskid;?>">Edit Task</a>
         <a class="btn btn-moore-outline" onclick="deleteTask(<?php echo $taskid;?>)">Delete Task</a>
       </div>
     </div>
 <?php }
-}else{echo "<div class='text-center'>The task you tried to view does not exist.</div>";} ?>
+}else{echo "<div class='text-center'>You are not allowed to view this task.</div>";} ?>
   </div>
  </div>
 </div>

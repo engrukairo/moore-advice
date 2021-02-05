@@ -10,9 +10,9 @@ $taskname = addslashes($_POST['taskname']);
 $taskowner = addslashes($_POST['taskowner']);
 $taskstime = addslashes($_POST['taskstime']);
 $tasketime = addslashes($_POST['tasketime']);
-$taskdesc = addslashes($_POST['taskdesc']);
+$taskdesc = htmlentities(addslashes($_POST['taskdesc']));
 $ts = date("D, d M , Y");
-$moore = "INSERT INTO `mooretasks`(`mid`, `taskname`, `taskowner`, `taskstime`, `tasketime`, `taskdesc`,`taskposted`) VALUES('0','$taskname','$taskowner','$taskstime','$tasketime','$taskdesc','$ts')";
+$moore = "INSERT INTO `mooretasks`(`mid`, `taskname`, `taskowner`, `taskstime`, `tasketime`, `taskdesc`,`taskposted`,`taskpostedby`) VALUES('0','$taskname','$taskowner','$taskstime','$tasketime','$taskdesc','$ts','$cookieuser')";
 			$result = $mooredb->query($moore);
 			$error = $mooredb->errorInfo();
 			if (isset($error[2])) die($error[2]);
@@ -21,7 +21,7 @@ exit;
 
 
 $extracss = '<link rel="stylesheet" href="css/datepicker3.css">';
-$m = "Admin Home";
+$m = "New Task";
 include("header.php");
 if(isset($_SESSION['update'])){$update = $_SESSION['update']; unset($_SESSION['update']);}else{$update = "";} echo $update;
 ?>

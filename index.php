@@ -28,27 +28,21 @@ if(isset($_SESSION['update'])){$update = $_SESSION['update']; unset($_SESSION['u
 
 <div class="container">
   <div class="card-deck mb-3 text-center row">
-    <div class="card mb-4 shadow-sm col-md-3">
+    <div class="card mb-4 shadow-sm col-md-4">
       <div class="card-body">
         <h4 class="card-title pricing-card-title mb-5">New Task</h4>
         <a class="btn btn-lg btn-block btn-moore-outline" href="new-task"><i class="fa fa-plus"></i> Create</a>
       </div>
     </div>
-    <div class="card mb-4 shadow-sm col-md-3">
+    <div class="card mb-4 shadow-sm col-md-4">
       <div class="card-body">
-        <h4 class="card-title pricing-card-title mb-5">Ongoing Tasks</h4>
-        <a class="btn btn-lg btn-block btn-moore-outline" href="ongoing-tasks">View</a>
+        <h4 class="card-title pricing-card-title mb-5">View My Tasks</h4>
+        <a class="btn btn-lg btn-block btn-moore-outline" href="all-my-tasks">View</a>
       </div>
     </div>
-    <div class="card mb-4 shadow-sm col-md-3">
+	<div class="card mb-4 shadow-sm col-md-4">
       <div class="card-body">
-        <h4 class="card-title pricing-card-title mb-5">Completed Tasks</h4>
-        <a class="btn btn-lg btn-block btn-moore-outline" href="completed-tasks">View</a>
-      </div>
-    </div>
-	<div class="card mb-4 shadow-sm col-md-3">
-      <div class="card-body">
-        <h4 class="card-title pricing-card-title mb-5">All Tasks</h4>
+        <h4 class="card-title pricing-card-title mb-5">All Users Tasks</h4>
         <a class="btn btn-lg btn-block btn-moore-outline" href="all-tasks">View All</a>
       </div>
     </div>

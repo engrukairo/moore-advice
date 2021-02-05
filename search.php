@@ -2,7 +2,7 @@
 if(!isset($_POST['query'])){header("Location: https://moore.esperasoft.com"); exit;}
 
 
-$connect = mysqli_connect("localhost", "mooreadvice", "m00r3advLcE", "mooreadvice");
+$connect = mysqli_connect("localhost", "esperaso_mooredb", "m00r3advLcE", "esperaso_mooredb");
 $output = '';
 if(isset($_POST["query"]))
 {

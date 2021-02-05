@@ -75,24 +75,39 @@ $sql = "INSERT INTO `mooreusers`(`uid`, `username`, `e_d`, `phone`, `password`) 
 		}
 }
 
-if(isset($_POST['passReset'])){
+if(isset($_POST['resetPass'])){
+$resetcode = addslashes($_POST['resetcode']);
 $userphone = addslashes($_POST['phone']);
+$password = addslashes($_POST['password']);
+$cpassword = addslashes($_POST['cpassword']);
 include("databasecon.php");
 
-	$sql = "SELECT * FROM mooreusers WHERE phone = '$userphone'";
+	$sql = "SELECT * FROM mooreusers WHERE phone = '$userphone' AND resettoken = '$resetcode'";
 	$stmt = $mooredb->prepare($sql);
 	$stmt->execute();
 	$result = $stmt->fetchAll();
 	$usercount = count($result);
 	
 	if($usercount == 1){
-		$resettoken = rand(111111,999999);
-			$updt = "UPDATE `mooreusers` SET `resettoken`='$resettoken' WHERE phone = '$userphone'";
+		if($password == $cpassword){
+			$userpw = addslashes($_POST['password']);
+			$userpw = password_hash($userpw, PASSWORD_DEFAULT);
+			$updt = "UPDATE `mooreusers` SET `resettoken`='$resettoken',`password` = '$userpw' WHERE phone = '$userphone'";
 			$uppd = $mooredb ->query($updt);
 			$error = $mooredb->errorInfo();
 			if (isset($error[2])) die($error[2]);
-			$_SESSION['update'] = "<div class='alert alert-success' align='center'>Your password reset code is $resettoken.<br><small>Please note that this would been sent as sms in production.</small><br><a href='https://moore.esperasoft.com/reset-pass'>Click here to proceed.</a></div>";
-	}else{$_SESSION['update'] = "<div class='alert alert-danger' align='center'>The Phone Number you entered does not exist.</div>";}
+			$sql = "SELECT uid FROM mooreusers WHERE phone = '$userphone' AND password = '$userpw'";
+				foreach ($mooredb ->query($sql) as $row){
+				$uid = $row['uid'];
+				setcookie("moore_cookie", $uid, time()+60*60*24*365, "/");
+				$_SESSION['update'] = "<div class='alert alert-success alert-dismissable'>
+													<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+													Your password has been successfully reset.
+												</div>";
+				header("Location: https://moore.esperasoft.com"); exit;
+			}
+		}else{$_SESSION['update'] = "<div class='alert alert-danger' align='center'>The two passwords does not match.</div>";}
+	}else{$_SESSION['update'] = "<div class='alert alert-danger' align='center'>The Phone Number and password reset code does not match.</div>";}
 }
 
 
@@ -111,77 +126,33 @@ include("databasecon.php");
 <link href="https://moore.esperasoft.com/css/mystyles.css" rel="stylesheet">
   </head>
   <body class="signinbody">
-    <form class="form-signin" action="<?php echo $_SERVER['REQUEST_URI'];?>" method="POST">
+    <form class="form-passreset form-signin" action="<?php echo $_SERVER['REQUEST_URI'];?>" method="POST">
   	<div class="signingform mx-auto shadow-sm">
 	<div class="text-center">
 	<?php if(isset($_SESSION['update'])){$update = $_SESSION['update']; unset($_SESSION['update']);}else{$update = "";} echo $update; ?>
   <img class="mb-4" src="images/mooreadvice.png" alt="" width="100">
-  <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+  <h1 class="h3 mb-3 font-weight-normal">Password Reset</h1>
+  </div>
+  <div class="form-group">
+	  <label class="sr-onsly">Your Password Reset Code</label>
+	  <input type="text" class="form-control" placeholder="Password Reset Code" required name="resetcode">
   </div>
   <div class="form-group">
 	  <label class="sr-onsly">Phone Number</label>
 	  <input type="text" id="phone" class="form-control" placeholder="Phone Number" required name="phone">
   </div>
   <div class="form-group">
-	  <label for="inputPassword" class="sr-onsly">Password</label>
-	  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+	  <label for="inputPassword" class="sr-onsly">Create New Password</label>
+	  <input type="password" class="form-control npass" placeholder="Create New Password" required name="password">
   </div>
-  <button class="btn btn-moore btn-block subMoore" type="submit" name="signin" value="Sign in">Sign in</button>
-  <p class="text-muted text-center mb-0">Forgot your password? <a href="#" data-toggle="modal" data-target="#passreset" class="text-moore">Reset It</a></p>
-  <p class="text-muted text-center">New to Moore-Advice? <a href="#" data-toggle="modal" data-target="#newReg" class="text-moore">Sign Up</a></p>
+  <div class="form-group">
+	  <label for="inputPassword" class="sr-onsly">Confirm New Password</label>
+	  <input type="password" class="form-control npassc" placeholder="Confirm New Password" required name="cpassword">
+  </div>
+  <button class="btn btn-moore btn-block subMoore" type="submit" name="resetPass" value="Reset Password">Reset Password</button>
   <p class="mb-3 text-muted text-center">&copy; Moore-Advice 2021</p>
 </div>
 </form>
-
-		<div class="modal fade" id="passreset" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span class="modal-title" style="font-size:16px;">Admin Password Reset</span>
-                    </div>
-					<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="POST"> 
-					<div class="modal-body">
-						<div class="form-group">
-						 <label>Enter Your Registered Phone Number:</label>
-						  <input name="phone" class="form-control" type="text" required="required" placeholder="Your Phone Number">
-						</div>
-						<div class="form-group">
-							<input class="form-control btn-moore btn" type="submit" value="Proceed" name="passReset"/> 
-						</div>
-					</div>
-					</form>
-                </div>
-            </div>
-        </div>
-
-		<div class="modal fade" id="newReg" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span class="modal-title" style="font-size:16px;">Create a New Account</span>
-                    </div>
-					<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="POST"> 
-					<div class="modal-body">
-						<div class="form-group">
-						 <label>Your Full Name:</label>
-						  <input name="name" class="form-control" type="text" required="required" placeholder="Your Full Name">
-						</div>
-						<div class="form-group">
-						 <label>Your Active Phone Number:</label>
-						  <input name="phone" class="form-control" type="text" required="required" placeholder="Your Phone Number">
-						</div>
-						<div class="form-group">
-						 <label>Create a Password:</label>
-						  <input name="password" class="form-control" type="password" required="required" placeholder="Create a Password">
-						</div>
-						<div class="form-group">
-							<input class="form-control btn-moore btn" type="submit" value="Proceed" name="submitReg"/> 
-						</div>
-					</div>
-					</form>
-                </div>
-            </div>
-        </div>
 
 <script src="https://moore.esperasoft.com/js/jquery-3.2.1.min.js"></script>
 <script src="https://moore.esperasoft.com/js/bootstrap.min.js"></script>
