@@ -15,4 +15,4 @@ As requested earlier today, 05/02/2021, the user signup functionality has been a
 
 App details:
 1. URL: https://moore.esperasoft.com
-2. Login username and password can be created by the user through the sgnup functionality.
+2. Login username and password can be created by the user through the signup functionality.
