@@ -75,7 +75,6 @@ function deleteTask(id) {
 	});
 }
 
-
 	$('.subMoore').on('click', function() {
 		$(".subMoore").html('<i class="fa fa-spin fa-spinner"></i> Processing...');
 	});
@@ -99,3 +98,11 @@ function deleteTask(id) {
    load_data(search);
   }
  });
+
+$(".form-passreset").on('submit', function (e) {
+		npass = $(".npass").val();
+		npassc = $(".npassc").val();
+		if(npass != npassc){alert("The two passwords does not match. Try again");
+		$('.subMoore').html("Reset Password").blur();
+		return false;}
+});
