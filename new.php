@@ -4,21 +4,7 @@ session_start();
 if(!isset($_COOKIE['moore_cookie'])){header("Location: https://moore.esperasoft.com/login"); exit;}
 $cookieuser = addslashes($_COOKIE['moore_cookie']);
 include("databasecon.php");
-
-if(isset($_POST['taskname'])){
-$taskname = addslashes($_POST['taskname']);
-$taskowner = addslashes($_POST['taskowner']);
-$taskstime = addslashes($_POST['taskstime']);
-$tasketime = addslashes($_POST['tasketime']);
-$taskdesc = htmlentities(addslashes($_POST['taskdesc']));
-$ts = date("D, d M , Y");
-$moore = "INSERT INTO `mooretasks`(`mid`, `taskname`, `taskowner`, `taskstime`, `tasketime`, `taskdesc`,`taskposted`,`taskpostedby`) VALUES('0','$taskname','$taskowner','$taskstime','$tasketime','$taskdesc','$ts','$cookieuser')";
-			$result = $mooredb->query($moore);
-			$error = $mooredb->errorInfo();
-			if (isset($error[2])) die($error[2]);
-exit;
-}
-
+include("moorefunctions.php");
 
 $extracss = '<link rel="stylesheet" href="css/datepicker3.css">';
 $m = "New Task";
